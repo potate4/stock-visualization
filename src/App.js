@@ -54,6 +54,7 @@ const App = () => {
             setSelectedTradeCode(data[0].trade_code); // Ensure a trade code is selected initially
         }
     }, [data]);
+    
 
     useEffect(() => {
         if (selectedTradeCode) {
@@ -83,13 +84,13 @@ const App = () => {
             },
             body: JSON.stringify(newData),
         })
-            .then(response => response.json())
-            .then(() => {
-                fetchData();
-            })
-            .catch(error => {
-                console.error('Error updating data:', error);
-            });
+        .then(response => response.json())
+        .then(() => {
+            fetchData();
+        })
+        .catch(error => {
+            console.error('Error updating data:', error);
+        });
     };
 
     const handleInputChange = (e, id, field) => {
@@ -110,16 +111,16 @@ const App = () => {
     const updateChartData = () => {
         const allDates = data.map(row => row.date);
         const filteredData = data.filter(row => row.trade_code === selectedTradeCode);
-
+    
         // Map each date to the corresponding close price or null if not present
         const closePrices = allDates.map(date => {
             const found = filteredData.find(row => row.date === date);
             return found ? found.close : null;
         });
-
+    
         const allClosePrices = data.map(row => row.close);
         const volumes = data.map(row => row.volume);
-
+    
         setChartData({
             labels: allDates,
             datasets: [
@@ -151,7 +152,7 @@ const App = () => {
             ]
         });
     };
-
+    
     const handleTradeCodeChange = (event) => {
         setSelectedTradeCode(event.target.value);
     };
@@ -160,7 +161,6 @@ const App = () => {
         <div className="App">
             <div className="chart">
                 <select onChange={handleTradeCodeChange} value={selectedTradeCode}>
-                    <option value="">All</option>
                     {Array.from(new Set(data.map(row => row.trade_code))).map(tradeCode => (
                         <option key={tradeCode} value={tradeCode}>{tradeCode}</option>
                     ))}
