@@ -44,9 +44,10 @@
 }
 
 .table-container {
+    padding: 50px;
     margin: 20px auto;
     max-width: 100%; /* Set maximum width to ensure it fits within the screen */
-    overflow-x: hidden; /* Hide horizontal overflow */
+    overflow-x: scroll; /* Hide horizontal overflow */
 }
 
 table {
@@ -55,8 +56,10 @@ table {
 }
 
 th, td {
-    padding: 8px; /* Add padding to table cells */
+    padding: 4px; /* Add padding to table cells */
     text-align: left; /* Align text to the left */
+    margin: none;
+   
 }
 
 th {
@@ -73,7 +76,9 @@ button {
 }
 
 .chart {
+
   width: 80%; /* Adjust width as needed */
   height: 400px; /* Adjust height as needed */
-  margin: 0 auto; /* Center the chart */
+  margin: 20px auto; /* Center the chart */
+  padding: 20px;
 }
