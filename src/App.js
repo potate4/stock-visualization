@@ -110,9 +110,9 @@ const App = () => {
 
     const updateChartData = () => {
         const filteredData = data.filter(row => row.trade_code === selectedTradeCode);
-        const labels = filteredData.map(row => row.date);
+        const labels = data.map(row => row.date);
         const closePrices = filteredData.map(row => row.close);
-        const volumes = filteredData.map(row => row.volume);
+        const volumes = data.map(row => row.volume);
 
         setChartData({
             labels: labels,
