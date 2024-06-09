@@ -1,3 +1,32 @@
+# What I learned from this project and the challenges I faced completing it
+This project marked my first experience working with a Python backend, and I thoroughly enjoyed the process, particularly the graphing aspects with Chart.js, which were new to me.
+
+# Learning Points:
+
+1. Data Loading and Pagination:
+
+Initially, loading the large CSV file caused significant delays whenever I refreshed the page. To address this, I implemented pagination, loading only 10 rows at a time, which greatly improved the application's performance in my local device.
+
+2. Chart.js Integration:
+
+While integrating Chart.js, I encountered several errors that I managed to resolve by watching a few tutorials and reading documentation. This greatly improved my understanding of data visualization in web applications.
+
+3. Full-Stack Development:
+
+I learned how to load data from a JSON file into a React app and store data in a database using a Python backend. This project provided me with valuable insights into full-stack development, CRUD operations, and effective data handling.
+
+
+# Challenges:
+
+1. Handling Large Datasets:
+
+The size of the CSV file posed performance challenges. Implementing pagination was one way to making the application response better.
+
+2. Learning Curve with Chart.js:
+
+Understanding Chart.js and troubleshooting the errors required considerable effort and patience. However, this was a rewarding experience as it broadened my skill set.
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
