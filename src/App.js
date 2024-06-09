@@ -54,6 +54,7 @@ const App = () => {
             setSelectedTradeCode(data[0].trade_code); // Ensure a trade code is selected initially
         }
     }, [data]);
+    
 
     useEffect(() => {
         if (selectedTradeCode) {
