@@ -51,6 +51,12 @@ const App = () => {
 
     useEffect(() => {
         if (data.length > 0) {
+            setSelectedTradeCode(data[0].trade_code); // Ensure a trade code is selected initially
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (selectedTradeCode) {
             updateChartData();
         }
     }, [data, selectedTradeCode]);
@@ -65,9 +71,6 @@ const App = () => {
             })
             .then(data => {
                 setData(data);
-                if (!selectedTradeCode && data.length > 0) {
-                    setSelectedTradeCode(data[0].trade_code);
-                }
             })
             .catch(error => console.error("Error fetching data:", error));
     };
