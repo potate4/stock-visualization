@@ -109,15 +109,20 @@ const App = () => {
     };
 
     const updateChartData = () => {
+        const allDates = data.map(row => row.date);
         const filteredData = data.filter(row => row.trade_code === selectedTradeCode);
-        const labels = data.map(row => row.date);
-        const closePrices = filteredData.map(row => row.close);
-        const AllclosePrices = data.map(row => row.close);
-
+    
+        // Map each date to the corresponding close price or null if not present
+        const closePrices = allDates.map(date => {
+            const found = filteredData.find(row => row.date === date);
+            return found ? found.close : null;
+        });
+    
+        const allClosePrices = data.map(row => row.close);
         const volumes = data.map(row => row.volume);
-
+    
         setChartData({
-            labels: labels,
+            labels: allDates,
             datasets: [
                 {
                     type: 'line',
@@ -130,8 +135,8 @@ const App = () => {
                 {
                     type: 'line',
                     label: 'Close Price Unfiltered',
-                    data: AllclosePrices,
-                    borderColor: 'rgba(175, 192, 192, 1)',
+                    data: allClosePrices,
+                    borderColor: 'rgba(175, 192, 192, 0.5)',
                     backgroundColor: 'rgba(175, 192, 192, 0.2)',
                     yAxisID: 'y-axis-1',
                 },
@@ -147,7 +152,7 @@ const App = () => {
             ]
         });
     };
-
+    
     const handleTradeCodeChange = (event) => {
         setSelectedTradeCode(event.target.value);
     };
