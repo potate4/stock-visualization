@@ -1,19 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS,
+    LineElement,
+    CategoryScale,
+    LinearScale,
+    PointElement
+} from 'chart.js';
+
+ChartJS.register(
+    LineElement,
+    CategoryScale,
+    LinearScale,
+    PointElement
+)
 
 const App = () => {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [chartData, setChartData] = useState({
+        labels: [],
+        datasets: [{
+            label: 'Close Price',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        }]
+    });
     const limit = 10;
 
     useEffect(() => {
         fetchData();
     }, [currentPage]);
 
+    useEffect(() => {
+        if (data.length > 0) {
+            updateChartData();
+        }
+    }, [data]);
+
     const fetchData = () => {
         const offset = (currentPage - 1) * limit;
         fetch(`http://localhost:5000/data?page=${currentPage}&limit=${limit}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+                return response.json();
+            })
             .then(data => {
                 setData(data);
             })
@@ -52,8 +86,26 @@ const App = () => {
         setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
     };
 
+    const updateChartData = () => {
+        const labels = data.map(row => row.date);
+        const closePrices = data.map(row => row.close);
+
+        setChartData({
+            labels: labels,
+            datasets: [{
+                label: 'Close Price',
+                data: closePrices,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            }]
+        });
+    };
+
     return (
         <div className="App">
+            <div className="chart">
+                {chartData.labels.length > 0 && <Line data={chartData} />}
+            </div>
             <div className="table-container">
                 <table>
                     <thead>
