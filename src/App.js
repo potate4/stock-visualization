@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
-import { Line } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     LineElement,
@@ -17,6 +17,8 @@ import 'chartjs-adapter-date-fns';
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, BarElement, Tooltip, Legend, TimeScale);
 
 const App = () => {
+    const API_URL = 'https://sumaiyaahmed.pythonanywhere.com';
+
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedTradeCode, setSelectedTradeCode] = useState('');
@@ -63,7 +65,7 @@ const App = () => {
     }, [data, selectedTradeCode]);
 
     const fetchData = () => {
-        fetch(`http://localhost:5000/data?page=${currentPage}&limit=${limit}`)
+        fetch(`${API_URL}/data?page=${currentPage}&limit=${limit}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');
@@ -77,7 +79,7 @@ const App = () => {
     };
 
     const updateRow = (id, newData) => {
-        fetch(`http://localhost:5000/data/${id}`, {
+        fetch(`${API_URL}/data/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
