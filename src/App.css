@@ -71,3 +71,9 @@ button {
   margin: 0 5px;
   cursor: pointer;
 }
+
+.chart {
+  width: 80%; /* Adjust width as needed */
+  height: 400px; /* Adjust height as needed */
+  margin: 0 auto; /* Center the chart */
+}

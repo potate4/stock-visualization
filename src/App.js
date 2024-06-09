@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS,
-    LineElement,
-    CategoryScale,
-    LinearScale,
-    PointElement
-} from 'chart.js';
+import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
 
-ChartJS.register(
-    LineElement,
-    CategoryScale,
-    LinearScale,
-    PointElement
-)
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 const App = () => {
     const [data, setData] = useState([]);
@@ -40,7 +30,6 @@ const App = () => {
     }, [data]);
 
     const fetchData = () => {
-        const offset = (currentPage - 1) * limit;
         fetch(`http://localhost:5000/data?page=${currentPage}&limit=${limit}`)
             .then(response => {
                 if (!response.ok) {
@@ -63,7 +52,7 @@ const App = () => {
             body: JSON.stringify(newData),
         })
         .then(response => response.json())
-        .then(result => {
+        .then(() => {
             fetchData();
         })
         .catch(error => {
@@ -104,7 +93,17 @@ const App = () => {
     return (
         <div className="App">
             <div className="chart">
-                {chartData.labels.length > 0 && <Line data={chartData} />}
+                {chartData.labels.length > 0 && (
+                    <Line
+                        data={chartData}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }}
+                        height={400} // Adjust height as needed
+                        width={800} // Adjust width as needed
+                    />
+                )}
             </div>
             <div className="table-container">
                 <table>
