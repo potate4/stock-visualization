@@ -6,10 +6,18 @@ const App = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('/data.json')
-            .then(response => response.json())
-            .then(data => setData(data));
+        fetchData(); // Fetch data when component mounts
     }, []);
+
+    const fetchData = () => {
+        fetch('http://localhost:5000/data') // URL of your Flask backend
+            .then(response => response.json())
+            .then(data => {
+                console.log("Fetched data:", data); // Debug statement
+                setData(data);
+            })
+            .catch(error => console.error("Error fetching data:", error)); // Debug statement
+    };
 
     return (
         <div className="App">
@@ -26,8 +34,8 @@ const App = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((row, index) => (
-                        <tr key={index}>
+                    {data.map(row => (
+                        <tr key={row.id}>
                             <td>{row.date}</td>
                             <td>{row.trade_code}</td>
                             <td>{row.high}</td>

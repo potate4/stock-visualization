@@ -1,8 +1,12 @@
 # app.py
 from flask import Flask, request, jsonify
 import sqlite3
+from flask_cors import CORS  # Import CORS from flask_cors module
+
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes in your Flask app
+
 
 def get_db_connection():
     conn = sqlite3.connect('database.db')
