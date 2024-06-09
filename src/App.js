@@ -4,30 +4,56 @@ import './App.css';
 
 const App = () => {
     const [data, setData] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1); // Track the current page
-    const limit = 10; // Number of items per page
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
 
     useEffect(() => {
-        fetchData(); // Fetch data when component mounts
-    }, [currentPage]); // Refetch data when currentPage changes
+        fetchData();
+    }, [currentPage]);
 
     const fetchData = () => {
-        const offset = (currentPage - 1) * limit; // Calculate offset based on current page
-        fetch(`http://localhost:5000/data?page=${currentPage}&limit=${limit}`) // Pass page and limit as query parameters
+        const offset = (currentPage - 1) * limit;
+        fetch(`http://localhost:5000/data?page=${currentPage}&limit=${limit}`)
             .then(response => response.json())
             .then(data => {
-                console.log("Fetched data:", data); // Debug statement
+                console.log("Fetched data:", data);
                 setData(data);
             })
-            .catch(error => console.error("Error fetching data:", error)); // Debug statement
+            .catch(error => console.error("Error fetching data:", error));
     };
 
-    const nextPage = () => {
-        setCurrentPage(prevPage => prevPage + 1); // Increment current page
+    const updateRow = (id, newData) => {
+        fetch(`http://localhost:5000/data/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newData),
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            // Refresh data after update
+            fetchData();
+        })
+        .catch(error => {
+            console.error('Error updating data:', error);
+        });
     };
 
-    const prevPage = () => {
-        setCurrentPage(prevPage => Math.max(prevPage - 1, 1)); // Decrement current page, but not less than 1
+    const handleInputChange = (e, id, field) => {
+        const newData = [...data];
+        const index = newData.findIndex(row => row.id === id);
+        newData[index][field] = e.target.value;
+        setData(newData);
+    };
+
+    const goToNextPage = () => {
+        setCurrentPage(prevPage => prevPage + 1);
+    };
+
+    const goToPrevPage = () => {
+        setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
     };
 
     return (
@@ -47,19 +73,22 @@ const App = () => {
                 <tbody>
                     {data.map(row => (
                         <tr key={row.id}>
-                            <td>{row.date}</td>
-                            <td>{row.trade_code}</td>
-                            <td>{row.high}</td>
-                            <td>{row.low}</td>
-                            <td>{row.open}</td>
-                            <td>{row.close}</td>
-                            <td>{row.volume}</td>
+                            <td><input type="text" value={row.date} onChange={e => handleInputChange(e, row.id, 'date')} /></td>
+                            <td><input type="text" value={row.trade_code} onChange={e => handleInputChange(e, row.id, 'trade_code')} /></td>
+                            <td><input type="text" value={row.high} onChange={e => handleInputChange(e, row.id, 'high')} /></td>
+                            <td><input type="text" value={row.low} onChange={e => handleInputChange(e, row.id, 'low')} /></td>
+                            <td><input type="text" value={row.open} onChange={e => handleInputChange(e, row.id, 'open')} /></td>
+                            <td><input type="text" value={row.close} onChange={e => handleInputChange(e, row.id, 'close')} /></td>
+                            <td><input type="text" value={row.volume} onChange={e => handleInputChange(e, row.id, 'volume')} /></td>
+                            <td>
+                                <button onClick={() => updateRow(row.id, row)}>Update</button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <button onClick={prevPage} disabled={currentPage === 1}>Previous</button>
-            <button onClick={nextPage}>Next</button>
+            <button onClick={goToPrevPage} disabled={currentPage === 1}>Previous</button>
+            <button onClick={goToNextPage}>Next</button>
         </div>
     );
 }
