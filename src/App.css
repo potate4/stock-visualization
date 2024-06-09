@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+
+
+.App {
+  text-align: center;
+  padding: 20px;
+}
+
+.table-container {
+    margin: 20px auto;
+    max-width: 100%; /* Set maximum width to ensure it fits within the screen */
+    overflow-x: hidden; /* Hide horizontal overflow */
+}
+
+table {
+    width: 100%; /* Set table width to 100% */
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px; /* Add padding to table cells */
+    text-align: left; /* Align text to the left */
+}
+
+th {
+    background-color: #f2f2f2; /* Add background color to header cells */
+}
+.pagination {
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+}

@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
@@ -16,7 +15,6 @@ const App = () => {
         fetch(`http://localhost:5000/data?page=${currentPage}&limit=${limit}`)
             .then(response => response.json())
             .then(data => {
-                console.log("Fetched data:", data);
                 setData(data);
             })
             .catch(error => console.error("Error fetching data:", error));
@@ -32,8 +30,6 @@ const App = () => {
         })
         .then(response => response.json())
         .then(result => {
-            console.log(result);
-            // Refresh data after update
             fetchData();
         })
         .catch(error => {
@@ -58,37 +54,42 @@ const App = () => {
 
     return (
         <div className="App">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Trade Code</th>
-                        <th>High</th>
-                        <th>Low</th>
-                        <th>Open</th>
-                        <th>Close</th>
-                        <th>Volume</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map(row => (
-                        <tr key={row.id}>
-                            <td><input type="text" value={row.date} onChange={e => handleInputChange(e, row.id, 'date')} /></td>
-                            <td><input type="text" value={row.trade_code} onChange={e => handleInputChange(e, row.id, 'trade_code')} /></td>
-                            <td><input type="text" value={row.high} onChange={e => handleInputChange(e, row.id, 'high')} /></td>
-                            <td><input type="text" value={row.low} onChange={e => handleInputChange(e, row.id, 'low')} /></td>
-                            <td><input type="text" value={row.open} onChange={e => handleInputChange(e, row.id, 'open')} /></td>
-                            <td><input type="text" value={row.close} onChange={e => handleInputChange(e, row.id, 'close')} /></td>
-                            <td><input type="text" value={row.volume} onChange={e => handleInputChange(e, row.id, 'volume')} /></td>
-                            <td>
-                                <button onClick={() => updateRow(row.id, row)}>Update</button>
-                            </td>
+            <div className="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Trade Code</th>
+                            <th>High</th>
+                            <th>Low</th>
+                            <th>Open</th>
+                            <th>Close</th>
+                            <th>Volume</th>
+                            <th>Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            <button onClick={goToPrevPage} disabled={currentPage === 1}>Previous</button>
-            <button onClick={goToNextPage}>Next</button>
+                    </thead>
+                    <tbody>
+                        {data.map(row => (
+                            <tr key={row.id}>
+                                <td><input type="text" value={row.date} onChange={e => handleInputChange(e, row.id, 'date')} /></td>
+                                <td><input type="text" value={row.trade_code} onChange={e => handleInputChange(e, row.id, 'trade_code')} /></td>
+                                <td><input type="text" value={row.high} onChange={e => handleInputChange(e, row.id, 'high')} /></td>
+                                <td><input type="text" value={row.low} onChange={e => handleInputChange(e, row.id, 'low')} /></td>
+                                <td><input type="text" value={row.open} onChange={e => handleInputChange(e, row.id, 'open')} /></td>
+                                <td><input type="text" value={row.close} onChange={e => handleInputChange(e, row.id, 'close')} /></td>
+                                <td><input type="text" value={row.volume} onChange={e => handleInputChange(e, row.id, 'volume')} /></td>
+                                <td>
+                                    <button onClick={() => updateRow(row.id, row)}>Update</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="pagination">
+                <button onClick={goToPrevPage} disabled={currentPage === 1}>Previous</button>
+                <button onClick={goToNextPage}>Next</button>
+            </div>
         </div>
     );
 }
