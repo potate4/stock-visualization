@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './App.css';
-import { Line, Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     LineElement,
@@ -32,6 +32,7 @@ const App = () => {
     //const API_URL = 'localhost:5000';
 
     const [data, setData] = useState([]);
+    const [editData, setEditData] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedTradeCode, setSelectedTradeCode] = useState('All');
     const [chartData, setChartData] = useState({
@@ -75,9 +76,7 @@ const App = () => {
 
     const updateChartData = useCallback(() => {
         const allDates = data.map(row => row.date);
-      //  const filteredData = data.filter(row => row.trade_code === selectedTradeCode);
-      const filteredData = selectedTradeCode === 'All' ? data : data.filter(row => row.trade_code === selectedTradeCode);
-
+        const filteredData = selectedTradeCode === 'All' ? data : data.filter(row => row.trade_code === selectedTradeCode);
 
         const closePrices = allDates.map(date => {
             const found = filteredData.find(row => row.date === date);
@@ -167,10 +166,23 @@ const App = () => {
     };
 
     const handleInputChange = (e, id, field) => {
-        const newData = [...data];
-        const index = newData.findIndex(row => row.id === id);
-        newData[index][field] = e.target.value;
+        const newEditData = { ...editData };
+        if (!newEditData[id]) {
+            newEditData[id] = {};
+        }
+        newEditData[id][field] = e.target.value;
+        setEditData(newEditData);
+    };
+
+    const handleUpdateClick = (id) => {
+        const newData = data.map(row => row.id === id ? { ...row, ...editData[id] } : row);
         setData(newData);
+        updateRow(id, { ...data.find(row => row.id === id), ...editData[id] });
+        setEditData(prev => {
+            const updatedEditData = { ...prev };
+            delete updatedEditData[id];
+            return updatedEditData;
+        });
     };
 
     const goToNextPage = () => {
@@ -189,7 +201,7 @@ const App = () => {
         <div className="App">
             <div className="chart">
                 <select onChange={handleTradeCodeChange} value={selectedTradeCode}>
-                <option value="All">All</option>
+                    <option value="All">All</option>
                     {Array.from(new Set(data.map(row => row.trade_code))).map(tradeCode => (
                         <option key={tradeCode} value={tradeCode}>{tradeCode}</option>
                     ))}
@@ -243,15 +255,15 @@ const App = () => {
                     <tbody>
                         {data.filter(row => selectedTradeCode === 'All' || row.trade_code === selectedTradeCode).map(row => (
                             <tr key={row.id}>
-                                <td><input type="text" value={row.date} onChange={e => handleInputChange(e, row.id, 'date')} /></td>
-                                <td><input type="text" value={row.trade_code} onChange={e => handleInputChange(e, row.id, 'trade_code')} /></td>
-                                <td><input type="text" value={row.high} onChange={e => handleInputChange(e, row.id, 'high')} /></td>
-                                <td><input type="text" value={row.low} onChange={e => handleInputChange(e, row.id, 'low')} /></td>
-                                <td><input type="text" value={row.open} onChange={e => handleInputChange(e, row.id, 'open')} /></td>
-                                <td><input type="text" value={row.close} onChange={e => handleInputChange(e, row.id, 'close')} /></td>
-                                <td><input type="text" value={row.volume} onChange={e => handleInputChange(e, row.id, 'volume')} /></td>
+                                <td><input type="text" value={editData[row.id]?.date || row.date} onChange={e => handleInputChange(e, row.id, 'date')} /></td>
+                                <td><input type="text" value={editData[row.id]?.trade_code || row.trade_code} onChange={e => handleInputChange(e, row.id, 'trade_code')} /></td>
+                                <td><input type="text" value={editData[row.id]?.high || row.high} onChange={e => handleInputChange(e, row.id, 'high')} /></td>
+                                <td><input type="text" value={editData[row.id]?.low || row.low} onChange={e => handleInputChange(e, row.id, 'low')} /></td>
+                                <td><input type="text" value={editData[row.id]?.open || row.open} onChange={e => handleInputChange(e, row.id, 'open')} /></td>
+                                <td><input type="text" value={editData[row.id]?.close || row.close} onChange={e => handleInputChange(e, row.id, 'close')} /></td>
+                                <td><input type="text" value={editData[row.id]?.volume || row.volume} onChange={e => handleInputChange(e, row.id, 'volume')} /></td>
                                 <td>
-                                    <button onClick={() => updateRow(row.id, row)}>Update</button>
+                                    <button onClick={() => handleUpdateClick(row.id)}>Update</button>
                                 </td>
                             </tr>
                         ))}
