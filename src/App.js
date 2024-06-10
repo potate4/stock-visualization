@@ -108,7 +108,7 @@ const App = () => {
                 },
                 {
                     type: 'bar',
-                    label: 'Volume',
+                    label: 'Volume Unfiltered',
                     data: volumes,
                     backgroundColor: 'rgba(153, 102, 255, 0.2)',
                     borderColor: 'rgba(153, 102, 255, 1)',
