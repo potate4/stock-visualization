@@ -75,13 +75,9 @@ const App = () => {
 
     const updateChartData = useCallback(() => {
         const allDates = data.map(row => row.date);
-<<<<<<< Updated upstream
-        const filteredData = selectedTradeCode === 'All' ? data : data.filter(row => row.trade_code === selectedTradeCode);
-=======
       //  const filteredData = data.filter(row => row.trade_code === selectedTradeCode);
       const filteredData = selectedTradeCode === 'All' ? data : data.filter(row => row.trade_code === selectedTradeCode);
 
->>>>>>> Stashed changes
 
         const closePrices = allDates.map(date => {
             const found = filteredData.find(row => row.date === date);
@@ -128,9 +124,6 @@ const App = () => {
     }, [currentPage, fetchData]);
 
     useEffect(() => {
-<<<<<<< Updated upstream
-        if (data.length > 0 && selectedTradeCode === 'All') {
-=======
         if (data.length > 0) {
             setSelectedTradeCode("All"); // Ensure a trade code is selected initially
         }
@@ -138,7 +131,6 @@ const App = () => {
 
     useEffect(() => {
         if (selectedTradeCode) {
->>>>>>> Stashed changes
             updateChartData();
         }
     }, [data, selectedTradeCode, updateChartData]);
@@ -183,11 +175,7 @@ const App = () => {
         <div className="App">
             <div className="chart">
                 <select onChange={handleTradeCodeChange} value={selectedTradeCode}>
-<<<<<<< Updated upstream
-                    <option value="All">All</option>
-=======
                 <option value="All">All</option>
->>>>>>> Stashed changes
                     {Array.from(new Set(data.map(row => row.trade_code))).map(tradeCode => (
                         <option key={tradeCode} value={tradeCode}>{tradeCode}</option>
                     ))}
