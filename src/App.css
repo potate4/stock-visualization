@@ -48,6 +48,7 @@
     margin: 20px auto;
     max-width: 100%; /* Set maximum width to ensure it fits within the screen */
     overflow-x: scroll; /* Hide horizontal overflow */
+    overflow-y: scroll;
 }
 
 table {

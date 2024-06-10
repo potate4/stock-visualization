@@ -29,6 +29,7 @@ ChartJS.register(
 
 const App = () => {
     const API_URL = 'https://sumaiyaahmed.pythonanywhere.com';
+    //const API_URL = 'localhost:5000';
 
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,7 +56,7 @@ const App = () => {
             }
         ]
     });
-    const limit = 10;
+    const limit = 100;
     const chartRef = useRef(null);
 
     const fetchData = useCallback(() => {
@@ -223,7 +224,7 @@ const App = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map(row => (
+                        {data.filter(row => row.trade_code === selectedTradeCode).map(row => (
                             <tr key={row.id}>
                                 <td><input type="text" value={row.date} onChange={e => handleInputChange(e, row.id, 'date')} /></td>
                                 <td><input type="text" value={row.trade_code} onChange={e => handleInputChange(e, row.id, 'trade_code')} /></td>
