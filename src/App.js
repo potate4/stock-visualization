@@ -33,7 +33,7 @@ const App = () => {
 
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedTradeCode, setSelectedTradeCode] = useState('');
+    const [selectedTradeCode, setSelectedTradeCode] = useState('All');
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
@@ -75,7 +75,7 @@ const App = () => {
 
     const updateChartData = useCallback(() => {
         const allDates = data.map(row => row.date);
-        const filteredData = data.filter(row => row.trade_code === selectedTradeCode);
+        const filteredData = selectedTradeCode === 'All' ? data : data.filter(row => row.trade_code === selectedTradeCode);
 
         const closePrices = allDates.map(date => {
             const found = filteredData.find(row => row.date === date);
@@ -122,13 +122,7 @@ const App = () => {
     }, [currentPage, fetchData]);
 
     useEffect(() => {
-        if (data.length > 0) {
-            setSelectedTradeCode(data[0].trade_code); // Ensure a trade code is selected initially
-        }
-    }, [data]);
-
-    useEffect(() => {
-        if (selectedTradeCode) {
+        if (data.length > 0 && selectedTradeCode === 'All') {
             updateChartData();
         }
     }, [data, selectedTradeCode, updateChartData]);
@@ -173,6 +167,7 @@ const App = () => {
         <div className="App">
             <div className="chart">
                 <select onChange={handleTradeCodeChange} value={selectedTradeCode}>
+                    <option value="All">All</option>
                     {Array.from(new Set(data.map(row => row.trade_code))).map(tradeCode => (
                         <option key={tradeCode} value={tradeCode}>{tradeCode}</option>
                     ))}
@@ -224,7 +219,7 @@ const App = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.filter(row => row.trade_code === selectedTradeCode).map(row => (
+                        {data.filter(row => selectedTradeCode === 'All' || row.trade_code === selectedTradeCode).map(row => (
                             <tr key={row.id}>
                                 <td><input type="text" value={row.date} onChange={e => handleInputChange(e, row.id, 'date')} /></td>
                                 <td><input type="text" value={row.trade_code} onChange={e => handleInputChange(e, row.id, 'trade_code')} /></td>
