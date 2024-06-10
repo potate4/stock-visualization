@@ -35,6 +35,7 @@ const App = () => {
     const [editData, setEditData] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedTradeCode, setSelectedTradeCode] = useState('All');
+    const [reloadType, setReloadType] = useState('initial');
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
@@ -83,7 +84,7 @@ const App = () => {
             return found ? found.close : null;
         });
 
-        const VolumeFiltered = allDates.map(date => {
+        const volumeFiltered = allDates.map(date => {
             const found = filteredData.find(row => row.date === date);
             return found ? found.volume : null;
         });
@@ -106,14 +107,14 @@ const App = () => {
                     type: 'line',
                     label: 'Close Price Unfiltered',
                     data: allClosePrices,
-                    borderColor: selectedTradeCode === 'All' ? 'rgba(175, 192, 192, 0.5)' : 'transparent' ,
-                    backgroundColor: selectedTradeCode === 'All' ?'rgba(175, 192, 192, 0.2)': 'transparent' ,
+                    borderColor: selectedTradeCode === 'All' ? 'rgba(175, 192, 192, 0.5)' : 'transparent',
+                    backgroundColor: selectedTradeCode === 'All' ? 'rgba(175, 192, 192, 0.2)' : 'transparent',
                     yAxisID: 'y-axis-1',
                 },
                 {
                     type: 'bar',
                     label: 'Volume',
-                    data: VolumeFiltered,
+                    data: volumeFiltered,
                     backgroundColor: selectedTradeCode === 'All' ? 'transparent' : 'rgba(153, 102, 255, 0.2)',
                     borderColor: selectedTradeCode === 'All' ? 'transparent' : 'rgba(153, 102, 255, 1)',
                     borderWidth: 1,
@@ -123,8 +124,8 @@ const App = () => {
                     type: 'bar',
                     label: 'Volume Unfiltered',
                     data: volumes,
-                    backgroundColor: selectedTradeCode === 'All' ? 'rgba(153, 12, 255, 0.2)': 'transparent' ,
-                    borderColor: selectedTradeCode === 'All' ?  'rgba(153, 12, 255, 1)': 'transparent',
+                    backgroundColor: selectedTradeCode === 'All' ? 'rgba(153, 12, 255, 0.2)' : 'transparent',
+                    borderColor: selectedTradeCode === 'All' ? 'rgba(153, 12, 255, 1)' : 'transparent',
                     borderWidth: 1,
                     yAxisID: 'y-axis-2',
                 }
@@ -137,16 +138,11 @@ const App = () => {
     }, [currentPage, fetchData]);
 
     useEffect(() => {
-        if (data.length > 0) {
-            setSelectedTradeCode("All"); // Ensure a trade code is selected initially
+        if (reloadType === 'pageChange' && data.length > 0) {
+            setSelectedTradeCode("All"); // Ensure a trade code is selected initially when page changes
         }
-    }, [data]);
-
-    useEffect(() => {
-        if (selectedTradeCode) {
-            updateChartData();
-        }
-    }, [data, selectedTradeCode, updateChartData]);
+        updateChartData();
+    }, [data, reloadType, updateChartData]);
 
     const updateRow = (id, newData) => {
         fetch(`${API_URL}/data/${id}`, {
@@ -158,6 +154,7 @@ const App = () => {
         })
         .then(response => response.json())
         .then(() => {
+            setReloadType('update');
             fetchData();
         })
         .catch(error => {
@@ -186,10 +183,12 @@ const App = () => {
     };
 
     const goToNextPage = () => {
+        setReloadType('pageChange');
         setCurrentPage(prevPage => prevPage + 1);
     };
 
     const goToPrevPage = () => {
+        setReloadType('pageChange');
         setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
     };
 
