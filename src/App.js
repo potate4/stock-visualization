@@ -29,7 +29,7 @@ ChartJS.register(
 
 const App = () => {
     const API_URL = 'https://sumaiyaahmed.pythonanywhere.com';
-    //const API_URL = 'localhost:5000';
+    // const API_URL = 'localhost:5000';
 
     const [data, setData] = useState([]);
     const [editData, setEditData] = useState({});
@@ -71,9 +71,12 @@ const App = () => {
             })
             .then(data => {
                 setData(data);
+                if (reloadType === 'pageChange' || !data.some(row => row.trade_code === selectedTradeCode)) {
+                    setSelectedTradeCode('All');
+                }
             })
             .catch(error => console.error("Error fetching data:", error));
-    }, [API_URL, currentPage]);
+    }, [API_URL, currentPage, reloadType, selectedTradeCode]);
 
     const updateChartData = useCallback(() => {
         const allDates = data.map(row => row.date);
@@ -138,11 +141,8 @@ const App = () => {
     }, [currentPage, fetchData]);
 
     useEffect(() => {
-        if (reloadType === 'pageChange' && data.length > 0) {
-            setSelectedTradeCode("All"); // Ensure a trade code is selected initially when page changes
-        }
         updateChartData();
-    }, [data, reloadType, updateChartData]);
+    }, [data, updateChartData]);
 
     const updateRow = (id, newData) => {
         fetch(`${API_URL}/data/${id}`, {
@@ -155,7 +155,13 @@ const App = () => {
         .then(response => response.json())
         .then(() => {
             setReloadType('update');
-            fetchData();
+            fetchData().then(() => {
+                const tradeCodes = new Set(data.map(row => row.trade_code));
+                if (!tradeCodes.has(selectedTradeCode)) {
+                    setReloadType('pageChange');
+                    setSelectedTradeCode('All');
+                }
+            });
         })
         .catch(error => {
             console.error('Error updating data:', error);
@@ -193,6 +199,7 @@ const App = () => {
     };
 
     const handleTradeCodeChange = (event) => {
+        setReloadType('update'); // Treat changing the trade code as an update to prevent overriding it
         setSelectedTradeCode(event.target.value);
     };
 
