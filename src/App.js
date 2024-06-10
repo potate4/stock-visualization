@@ -56,7 +56,7 @@ const App = () => {
             }
         ]
     });
-    const limit = 100;
+    const limit = 15934;
     const chartRef = useRef(null);
 
     const fetchData = useCallback(() => {
