@@ -84,6 +84,11 @@ const App = () => {
             return found ? found.close : null;
         });
 
+        const VolumeFiltered = allDates.map(date => {
+            const found = filteredData.find(row => row.date === date);
+            return found ? found.volume : null;
+        });
+
         const allClosePrices = data.map(row => row.close);
         const volumes = data.map(row => row.volume);
 
@@ -102,16 +107,25 @@ const App = () => {
                     type: 'line',
                     label: 'Close Price Unfiltered',
                     data: allClosePrices,
-                    borderColor: 'rgba(175, 192, 192, 0.5)',
-                    backgroundColor: 'rgba(175, 192, 192, 0.2)',
+                    borderColor: selectedTradeCode === 'All' ? 'rgba(175, 192, 192, 0.5)' : 'transparent' ,
+                    backgroundColor: selectedTradeCode === 'All' ?'rgba(175, 192, 192, 0.2)': 'transparent' ,
                     yAxisID: 'y-axis-1',
+                },
+                {
+                    type: 'bar',
+                    label: 'Volume',
+                    data: VolumeFiltered,
+                    backgroundColor: selectedTradeCode === 'All' ? 'transparent' : 'rgba(153, 102, 255, 0.2)',
+                    borderColor: selectedTradeCode === 'All' ? 'transparent' : 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y-axis-2',
                 },
                 {
                     type: 'bar',
                     label: 'Volume Unfiltered',
                     data: volumes,
-                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: selectedTradeCode === 'All' ? 'rgba(153, 12, 255, 0.2)': 'transparent' ,
+                    borderColor: selectedTradeCode === 'All' ?  'rgba(153, 12, 255, 1)': 'transparent',
                     borderWidth: 1,
                     yAxisID: 'y-axis-2',
                 }
